@@ -62,12 +62,13 @@ export default {
     this.fetchData()
   },
   methods: {
-    fetchData() {
+    async fetchData() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.listLoading = false
-      })
+
+      const { data } = await fetchList(this.listQuery)
+
+      this.list = data.items
+      this.listLoading = false
     },
     handleDownload() {
       this.downloadLoading = true

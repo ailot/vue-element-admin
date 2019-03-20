@@ -132,36 +132,32 @@ export default {
         }
       })
     },
-    refreshSelectedTag(view) {
-      this.$store.dispatch('tagsView/delCachedView', view).then(() => {
-        const { fullPath } = view
-        this.$nextTick(() => {
-          this.$router.replace({
-            path: '/redirect' + fullPath
-          })
+    async refreshSelectedTag(view) {
+      await this.$store.dispatch('tagsView/delCachedView', view)
+      const { fullPath } = view
+      this.$nextTick(() => {
+        this.$router.replace({
+          path: '/redirect' + fullPath
         })
       })
     },
-    closeSelectedTag(view) {
-      this.$store.dispatch('tagsView/delView', view).then(({ visitedViews }) => {
-        if (this.isActive(view)) {
-          this.toLastView(visitedViews)
-        }
-      })
-    },
-    closeOthersTags() {
-      this.$router.push(this.selectedTag)
-      this.$store.dispatch('tagsView/delOthersViews', this.selectedTag).then(() => {
-        this.moveToCurrentTag()
-      })
-    },
-    closeAllTags(view) {
-      this.$store.dispatch('tagsView/delAllViews').then(({ visitedViews }) => {
-        if (this.affixTags.some(tag => tag.path === view.path)) {
-          return
-        }
+    async closeSelectedTag(view) {
+      const { visitedViews } = await this.$store.dispatch('tagsView/delView', view)
+      if (this.isActive(view)) {
         this.toLastView(visitedViews)
-      })
+      }
+    },
+    async closeOthersTags() {
+      this.$router.push(this.selectedTag)
+      await this.$store.dispatch('tagsView/delOthersViews', this.selectedTag)
+      this.moveToCurrentTag()
+    },
+    async closeAllTags(view) {
+      const { visitedViews } = await this.$store.dispatch('tagsView/delAllViews')
+      if (this.affixTags.some(tag => tag.path === view.path)) {
+        return
+      }
+      this.toLastView(visitedViews)
     },
     toLastView(visitedViews) {
       const latestView = visitedViews.slice(-1)[0]

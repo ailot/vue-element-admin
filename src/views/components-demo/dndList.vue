@@ -26,12 +26,11 @@ export default {
     this.getData()
   },
   methods: {
-    getData() {
+    async getData() {
       this.listLoading = true
-      fetchList().then(response => {
-        this.list1 = response.data.items.splice(0, 5)
-        this.list2 = response.data.items
-      })
+      const { data } = await fetchList()
+      this.list1 = data.items.splice(0, 5)
+      this.list2 = data.items
     }
   }
 }

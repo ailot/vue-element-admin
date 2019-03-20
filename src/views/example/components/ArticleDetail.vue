@@ -170,18 +170,15 @@ export default {
     this.tempRoute = Object.assign({}, this.$route)
   },
   methods: {
-    fetchData(id) {
-      fetchArticle(id).then(response => {
-        this.postForm = response.data
-        // Just for test
-        this.postForm.title += `   Article Id:${this.postForm.id}`
-        this.postForm.content_short += `   Article Id:${this.postForm.id}`
+    async fetchData(id) {
+      const { data } = await fetchArticle(id)
+      this.postForm = data
+      // Just for test
+      this.postForm.title += `   Article Id:${this.postForm.id}`
+      this.postForm.content_short += `   Article Id:${this.postForm.id}`
 
-        // Set tagsview title
-        this.setTagsViewTitle()
-      }).catch(err => {
-        console.log(err)
-      })
+      // Set tagsview title
+      this.setTagsViewTitle()
     },
     setTagsViewTitle() {
       const title = this.lang === 'zh' ? '编辑文章' : 'Edit Article'
@@ -224,11 +221,10 @@ export default {
       })
       this.postForm.status = 'draft'
     },
-    getRemoteUserList(query) {
-      userSearch(query).then(response => {
-        if (!response.data.items) return
-        this.userListOptions = response.data.items.map(v => v.name)
-      })
+    async getRemoteUserList(query) {
+      const { data } = await userSearch(query)
+      if (!data.items) return
+      this.userListOptions = data.items.map(v => v.name)
     }
   }
 }

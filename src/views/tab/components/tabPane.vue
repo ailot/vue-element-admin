@@ -89,13 +89,14 @@ export default {
     this.getList()
   },
   methods: {
-    getList() {
+    async getList() {
       this.loading = true
       this.$emit('create') // for test
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.loading = false
-      })
+
+      const { data } = await fetchList(this.listQuery)
+
+      this.list = data.items
+      this.loading = false
     }
   }
 }

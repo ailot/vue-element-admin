@@ -88,13 +88,14 @@ export default {
     this.getList()
   },
   methods: {
-    getList() {
+    async getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
-        this.listLoading = false
-      })
+
+      const { data } = await fetchList(this.listQuery)
+
+      this.list = data.items
+      this.total = data.total
+      this.listLoading = false
     },
     handleSizeChange(val) {
       this.listQuery.limit = val
